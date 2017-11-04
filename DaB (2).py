@@ -8,19 +8,12 @@ from discord.ext import commands
 import random
 from random import randint
 import giphypop
-from gameSuggestor import AddGame
+from gameSuggestor import checkPing
 
 description = '''A shitty little discord bot that is mostly made for shitposting. Created by David Wolak the best programmer around'''
 bot = commands.Bot(command_prefix='!', description=description)
 client = discord.Client()
 g = giphypop.Giphy()
-
-@bot.event
-async def on_member_update(before,after):
-    if(before.game != after.game and after.game != "None"):
-        print(after.game)
-        AddGame(after)
-    
 
 @bot.event
 async def on_ready():
@@ -31,14 +24,13 @@ async def on_ready():
     print('------')
 
 @bot.event
-async def on_message(message):
+async def on_message(message):#Activates when there is a message
     keyword = "FRICK"
+    hotWords = ["FUCK","DAB"]
+        
     message_split = message.content.split(' ')
     command = message_split[0]
 
-    
-    print(message.content)
-    print('message is from channel {} by {}'.format(message.channel,message.author.display_name))
     if message.author.discriminator != bot.user.discriminator:
        print("Not created by bot")
        if keyword in message.content.upper():
@@ -55,18 +47,18 @@ async def on_message(message):
                 await bot.send_message(message.channel,"<@{}> SAID FRICK THAT IS A NOT ALLOWED WORD".format(message.author.id))
 
     await bot.process_commands(message)
-    hotWords = ["FUCK","DAB"]
-    if all(x in message.content.upper() for x in hotWords):# in message.content.upper():
+
+    if all(x in message.content.upper() for x in hotWords):# If someone says fuck you dad, or both those words together it responds with a gif of a thumbs up and you too buddy
         if message.content.upper() != "WHAT THE FUCK":
             giffy = g.translate('thumbs up')
-            
-            
             await bot.send_message(message.channel,"You too buddy")
             await bot.send_message(message.channel,giffy.media_url)
-   
-    hotWords2 = ["FRICK","HECK"]
-    if all(x in message.content.upper() for x in hotWords2):
-        await bot.send_file(message.channel,"heck.png")
+            
+    if (message.content == "@here" or message.content == "@everyone"):
+            abuse = checkPing(message.author)
+            print(abuse)
+            if(abuse == 1):
+                await bot.send_message(message.channel.server.owner,"User "+ str(message.author) + "has abused their allowed amount of pings. Please take action")
 
 
 @bot.command(pass_context = True)
@@ -105,7 +97,7 @@ async def hello(ctx):
 
 @bot.command(pass_context=True)
 async def DaB(ctx):
-    description = "Hello friend. I am shitty little discord bot that is mostly made for shitposting. Created by David Wolak the best programmer around, so if I fuck up blame him!"
+    description = "Hello friend. I am shitty little discord bot that is mostly made for shitposting. Created by David Wolak the best programmer around, so if I mess up blame him!"
     await bot.send_message(ctx.message.channel,description)
 
 @bot.command(pass_context=True)
