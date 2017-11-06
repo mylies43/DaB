@@ -54,9 +54,8 @@ async def on_message(message):#Activates when there is a message
             await bot.send_message(message.channel,"You too buddy")
             await bot.send_message(message.channel,giffy.media_url)
             
-    if (message.content == "@here" or message.content == "@everyone"):
+    if (message.mention_everyone): # == "@here" or message.content == "@everyone"):
             abuse = checkPing(message.author)
-            print(abuse)
             if(abuse == 1):
                 await bot.send_message(message.channel.server.owner,"User "+ str(message.author) + "has abused their allowed amount of pings. Please take action")
 
