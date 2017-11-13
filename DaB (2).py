@@ -8,12 +8,21 @@ from discord.ext import commands
 import random
 from random import randint
 import giphypop
-from gameSuggestor import checkPing
+from PingDetection import Tree
+from PingDetection import checkPing
 
 description = '''A shitty little discord bot that is mostly made for shitposting. Created by David Wolak the best programmer around'''
 bot = commands.Bot(command_prefix='!', description=description)
 client = discord.Client()
 g = giphypop.Giphy()
+
+pingTree = Tree()
+pingTree.add("mylies43")
+pingTree.add("tinlun")
+pingTree.add("captainDevlin")
+pingTree.add("superSoulSpark")
+
+
 
 @bot.event
 async def on_ready():
@@ -22,6 +31,11 @@ async def on_ready():
     print(bot.user.id)
     print(bot.user.discriminator)
     print('------')
+
+  
+    
+
+    
 
 @bot.event
 async def on_message(message):#Activates when there is a message
@@ -47,18 +61,22 @@ async def on_message(message):#Activates when there is a message
                 await bot.send_file(message.channel,image)
                 await bot.send_message(message.channel,"<@{}> SAID FRICK THAT IS A NOT ALLOWED WORD".format(message.author.id))
 
-    await bot.process_commands(message)
-
+    
+    
     if all(x in message.content.upper() for x in hotWords):# If someone says fuck you dad, or both those words together it responds with a gif of a thumbs up and you too buddy
         if message.content.upper() != "WHAT THE FUCK":
             giffy = g.translate('thumbs up')
             await bot.send_message(message.channel,"You too buddy")
             await bot.send_message(message.channel,giffy.media_url)
             
-    if (message.mention_everyone): # == "@here" or message.content == "@everyone"):
-            abuse = checkPing(message.author)
-            if(abuse == 1):
+    if (message.mention_everyone):
+        abuse = checkPing(message.author,pingTree)
+        if(abuse == 1):
                 await bot.send_message(message.channel.server.owner,"User "+ str(message.author) + "has abused their allowed amount of pings. Please take action")
+                
+
+    await bot.process_commands(message)#Needs to be at end of check word to process the rest of the commands
+                
 @bot.command(pass_context = True)
 async def what(ctx):
     await bot.send_message(ctx.message.channel,"https://www.youtube.com/watch?v=AXzEcwYs8Eo")
