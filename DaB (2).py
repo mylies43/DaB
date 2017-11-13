@@ -25,6 +25,7 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):#Activates when there is a message
+  
     keyword = "FRICK"
     hotWords = ["FUCK","DAB"]
         
@@ -58,7 +59,10 @@ async def on_message(message):#Activates when there is a message
             abuse = checkPing(message.author)
             if(abuse == 1):
                 await bot.send_message(message.channel.server.owner,"User "+ str(message.author) + "has abused their allowed amount of pings. Please take action")
-
+@bot.command(pass_context = True)
+async def what(ctx):
+    await bot.send_message(ctx.message.channel,"https://www.youtube.com/watch?v=AXzEcwYs8Eo")
+    await bot.delete_message(ctx.message)
 
 @bot.command(pass_context = True)
 async def gif(ctx):

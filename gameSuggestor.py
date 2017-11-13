@@ -2,8 +2,88 @@ import gspread
 import discord
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import date
- 
+
+class Node:
+    def __init__(self, val):
+        self.l = None
+        self.r = None
+        self.user = val
+
+class Tree:
+    def __init__(self):
+        self.root = None
+
+    def getRoot(self):
+        return self.root
+
+    def add(self, user):
+        if(self.root == None):
+            self.root = Node(user)
+        else:
+            self._add(user, self.root)
+
+    def _add(self, user, node):
+        if(user < node.user):
+            if(node.l != None):
+                self._add(user, node.l)
+            else:
+                node.l = Node(user)
+        else:
+            if(node.r != None):
+                self._add(user, node.r)
+            else:
+                node.r = Node(user)
+
+    def find(self, user):
+        if(self.root is not None):
+            return self._find(user, self.root)
+        else:
+            print("NULL")
+            return None
+
+    def _find(self, user, node):
+        if(user == node.user):
+            print("Returning node")
+            print(node.user)
+            return node
+        elif(user < node.user and node.l != None):
+            return self._find(user, node.l)
+        elif(user > node.user and node.r != None):
+            return self._find(user, node.r)
+
+    def deleteTree(self):
+        # garbage collector will do this for us. 
+        self.root = None
+
+    def printTree(self):
+        if(self.root != None):
+            self._printTree(self.root)
+
+    def _printTree(self, node):
+        if(node != None):
+            self._printTree(node.l)
+            print (str(node.user) + ' ')
+            self._printTree(node.r)
+
+tree = Tree()
+tree.add(3)
+tree.add(4)
+tree.add(0)
+tree.add(8)
+tree.add(2)
+    
+tree.printTree()
+node = tree.find(8)
+node.user = 100
+tree.printTree()
+print(node.user)
+
+
 def checkPing(member):
+    node 
+
+ 
+def checkPingOld(member):
 # use creds to create a client to interact with the Google Drive API
     scope = ['https://spreadsheets.google.com/feeds']
     creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
